@@ -19,4 +19,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
     }
+
+    public String getTitleString(int i, int j) {
+        return null;
+    }
 }

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -82,18 +83,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void StartGame(int i){
         Log.e(TAG,"clicked on" + i);
         //startActivity(new Intent(this,GraphicsActivity.class));
-        Intent intent = new Intent(this, GameActivity.KEY_DIFFICULTY,i);
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra(GameActivity.KEY_DIFFICULTY,i);
+        startActivity(intent);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-
+        //super.OnCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
         return true;
     }
 
 
-    public boolean onOptionSelected(MenuItem item){
-
+    public boolean onOptionItemSelected(MenuItem item){
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case R.id.settings:
+                startActivity(new Intent(this, SettingActivity.class));
+                return true;
+        }
         return false;
     }
 
