@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 
 public class PuzzleView extends View {
     private static final String TAG = "sudoku";
@@ -117,16 +120,111 @@ public class PuzzleView extends View {
         }
         //绘制hints
         if(SettingActivity.getHints(getContext())){             //判断是否显示高亮提示
-            Paint hints = new Paint();
+            Paint hint = new Paint();
             int c[] = {getResources().getColor(R.color.puzzle_hint_0),
                 getResources().getColor(R.color.puzzle_hint_1),
                 getResources().getColor(R.color.puzzle_hint_2)};
+            Rect r = new Rect();
+            for(int i = 0; i < 9; i++){
+                for(int j = 0; j < 9; j++) {
+                    int mouseleft = 9 - game.getUsedTiles(i, j).length;
+                    if(mouseleft < c.length){
+                        getRect(i,j,r);
+                        hint.setColor(c[mouseleft]);
+                        canvas.drawRect(r,hint);
+                    }
+                }
+            }
+        }
+        //绘制选定区
+        Log.e(TAG,"selRect" + selRect);
+        Paint selected = new Paint();
+        selected.setColor(getResources().getColor(R.color.puzzle_selected));
+        canvas.drawRect(selRect,selected);
+        super.onDraw(canvas);
+    }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        Log.e(TAG,"onKeyDown:keycode="+keyCode+"event="+event);
+        switch (keyCode){
+            case KeyEvent.KEYCODE_DPAD_UP:
+                select(selX,selY-1);
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                select(selX,selY+1);
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                select(selX-1,selY);
+            case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
+                select(selX+1,selY);
+                break;;
+
+            case KeyEvent.KEYCODE_0:
+            case KeyEvent.KEYCODE_SPACE:
+                setSelectedTile(0);
+                break;
+            case KeyEvent.KEYCODE_1:
+                setSelectedTile(1);
+                break;
+            case KeyEvent.KEYCODE_2:
+                setSelectedTile(2);
+                break;
+            case KeyEvent.KEYCODE_3:
+                setSelectedTile(3);
+                break;
+            case KeyEvent.KEYCODE_4:
+                setSelectedTile(4);
+                break;
+            case KeyEvent.KEYCODE_5:
+                setSelectedTile(5);
+                break;
+            case KeyEvent.KEYCODE_6:
+                setSelectedTile(6);
+                break;
+            case KeyEvent.KEYCODE_7:
+                setSelectedTile(7);
+                break;
+            case KeyEvent.KEYCODE_8:
+                setSelectedTile(8);
+                break;
+            case KeyEvent.KEYCODE_9:
+                setSelectedTile(9);
+                break;
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                game.showKeyPadOrError(selX,selY);
+                break;
+            default:
+                return super.onKeyDown(keyCode,event);
+        }
+        return true;
+    }
+
+    public void setSelectedTile(int tile){
+        if(game.setTilefVlid(selX,selY,tile)){
+            invalidate();
+        }else {
+            Log.e(TAG,"setSelectedTile:invalid" + tile);
+            startAnimation(AnimationUtils.loadAnimation(game,R.anim.shake));
         }
     }
 
-    private void select(int x, int y){
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        if(event.getAction()!= MotionEvent.ACTION_DOWN){
+            return super.onTouchEvent(event);
+        }
+        select((int)(event.getX()/width),(int)(event.getY()/height));
+        game.showKeyPadOrErro(selX,selY);
+        Log.e(TAG,"onTouchEvent:x"+selX+",y" +selY);
+        return true;
+    }
 
+    private void select(int x, int y){
+        invalidate(selRect);
+        selX = Math.min(Math.max(x,0),8);
+        selY = Math.min(Math.max(y,0),8);
+        getRect(selX,selY,selRect);
+        invalidate(selRect);
     }
 
     private void getRect(int x, int y, Rect rect){
