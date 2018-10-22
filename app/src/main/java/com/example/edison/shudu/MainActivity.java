@@ -100,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionItemSelected(MenuItem item){
         super.onOptionsItemSelected(item);
         switch (item.getItemId()){
-            case R.id.settings:
-                startActivity(new Intent(this, SettingActivity.class));
-                return true;
+            //case R.id.settings:
+                //startActivity(new Intent(this, SettingActivity.class));
+                //return true;
         }
         return false;
     }

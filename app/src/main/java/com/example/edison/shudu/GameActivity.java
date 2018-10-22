@@ -246,4 +246,6 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         //Music.play(this, R.raw.lhydd);
     }
+
+
 }

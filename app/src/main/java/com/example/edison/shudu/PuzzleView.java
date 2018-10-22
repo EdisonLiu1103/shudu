@@ -156,7 +156,7 @@ public class PuzzleView extends View {
                 select(selX-1,selY);
             case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
                 select(selX+1,selY);
-                break;;
+                break;
 
             case KeyEvent.KEYCODE_0:
             case KeyEvent.KEYCODE_SPACE:
@@ -200,11 +200,11 @@ public class PuzzleView extends View {
     }
 
     public void setSelectedTile(int tile){
-        if(game.setTilefVlid(selX,selY,tile)){
+        if(game.setTilelfValid(selX,selY,tile)){
             invalidate();
         }else {
             Log.e(TAG,"setSelectedTile:invalid" + tile);
-            startAnimation(AnimationUtils.loadAnimation(game,R.anim.shake));
+            //startAnimation(AnimationUtils.loadAnimation(game,R.anim.shake));
         }
     }
 
@@ -214,7 +214,7 @@ public class PuzzleView extends View {
             return super.onTouchEvent(event);
         }
         select((int)(event.getX()/width),(int)(event.getY()/height));
-        game.showKeyPadOrErro(selX,selY);
+        game.showKeyPadOrError(selX,selY);
         Log.e(TAG,"onTouchEvent:x"+selX+",y" +selY);
         return true;
     }
